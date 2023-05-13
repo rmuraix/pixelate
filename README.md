@@ -1,8 +1,15 @@
-# 
-[![License](https://img.shields.io/github/license/rmuraix/)](./LICENSE)  
+# Pixelate
+
+[![License](https://img.shields.io/github/license/rmuraix/pixelate)](./LICENSE)
+
 ## About
-  
+
+Command line applications for image processing
+
 ## Usage
-  
-## Contributing  
-Your contribution is always welcome. Please read [Contributing Guide](.github/CONTRIBUTING.md).  
+
+`pixelate --help` or `pixelate -h` to read how to use it.
+
+## Contributing
+
+Your contribution is always welcome. Please read [Contributing Guide](.github/CONTRIBUTING.md).
