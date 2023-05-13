@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
 
+mod grayscale;
+
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
@@ -20,18 +22,15 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// does testing things
-    Test {
-        /// test values
-        #[arg(short, long)]
-        list: String,
-    },
+    Grayscale,
 }
 
 fn main() {
     let cli = Cli::parse();
     match &cli.command {
-        Commands::Test { list } => {
-            println!("{}", list)
+        Commands::Grayscale => {
+            let img = grayscale::grayscale(cli.target);
+            img.save(cli.out).unwrap()
         }
     }
 }
