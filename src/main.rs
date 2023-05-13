@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
 
-mod grayscale;
+mod filters;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -29,7 +29,7 @@ fn main() {
     let cli = Cli::parse();
     match &cli.command {
         Commands::Grayscale => {
-            let img = grayscale::grayscale(cli.target);
+            let img = filters::grayscale(cli.target);
             img.save(cli.out).unwrap()
         }
     }
