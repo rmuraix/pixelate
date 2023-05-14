@@ -21,3 +21,5 @@ target/
 
 # Image files
 *.png
+*.jpg
+*.JPG

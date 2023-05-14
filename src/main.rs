@@ -21,8 +21,10 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// does testing things
+    /// Convert to grayscale image
     Grayscale,
+    /// halftoning using the dither method
+    Halftone,
 }
 
 fn main() {
@@ -30,6 +32,10 @@ fn main() {
     match &cli.command {
         Commands::Grayscale => {
             let img = filters::grayscale(cli.target);
+            img.save(cli.out).unwrap()
+        }
+        Commands::Halftone => {
+            let img = filters::halftoning(cli.target);
             img.save(cli.out).unwrap()
         }
     }
