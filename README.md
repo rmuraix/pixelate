@@ -9,7 +9,8 @@ Command line applications for image processing
 
 ## Usage
 
-`pixelate --help` or `pixelate -h` to read how to use it.
+Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.  
+Run `pixelate --help` or `pixelate -h` to read how to use it.
 
 ## Contributing
 
