@@ -12,6 +12,11 @@ Command line applications for image processing
 Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.  
 Run `pixelate --help` or `pixelate -h` to read how to use it.
 
+## Available features
+
+- Grayscale
+- Halftoning(dither method)
+
 ## Contributing
 
 Your contribution is always welcome. Please read [Contributing Guide](.github/CONTRIBUTING.md).
