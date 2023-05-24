@@ -22,7 +22,17 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Convert to grayscale image
-    Grayscale,
+    Grayscale {
+        /// Red weight
+        #[arg(short, long, default_value = "0.2126", value_name = "FILE")]
+        red: f64,
+        /// Green weight
+        #[arg(short, long, default_value = "0.7152", value_name = "FILE")]
+        green: f64,
+        /// Blue weight
+        #[arg(short, long, default_value = "0.0722", value_name = "FILE")]
+        blue: f64,
+    },
     /// halftoning using the dither method
     Halftone,
 }
@@ -30,8 +40,11 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
     match &cli.command {
-        Commands::Grayscale => {
-            let img = filters::grayscale(cli.target);
+        Commands::Grayscale { red, green, blue } => {
+            if (red + green + blue) > 1.0 {
+                panic!("The sum of the RGB values must be less than 1.0")
+            }
+            let img = filters::grayscale(cli.target, *red, *green, *blue);
             img.save(cli.out).unwrap()
         }
         Commands::Halftone => {
