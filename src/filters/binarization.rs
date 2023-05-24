@@ -5,7 +5,7 @@ use image::{ImageBuffer, Luma};
 use super::grayscale;
 
 pub fn halftoning(path: PathBuf) -> ImageBuffer<Luma<u8>, Vec<u8>> {
-    let mut gray_img: ImageBuffer<Luma<u8>, Vec<u8>> = grayscale(path);
+    let mut gray_img: ImageBuffer<Luma<u8>, Vec<u8>> = grayscale(path, 0.2126, 0.7152, 0.0722);
     let size_x: u32 = gray_img.width();
     let size_y: u32 = gray_img.height();
     // dither method
