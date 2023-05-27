@@ -24,13 +24,13 @@ enum Commands {
     /// Convert to grayscale image
     Grayscale {
         /// Red weight
-        #[arg(short, long, default_value = "0.2126", value_name = "FILE")]
+        #[arg(short, long, default_value = "0.2126")]
         red: f64,
         /// Green weight
-        #[arg(short, long, default_value = "0.7152", value_name = "FILE")]
+        #[arg(short, long, default_value = "0.7152")]
         green: f64,
         /// Blue weight
-        #[arg(short, long, default_value = "0.0722", value_name = "FILE")]
+        #[arg(short, long, default_value = "0.0722")]
         blue: f64,
     },
     /// halftoning using the dither method
