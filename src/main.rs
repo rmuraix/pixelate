@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, time};
 
 use clap::{Parser, Subcommand};
 
@@ -41,9 +41,11 @@ enum Commands {
         #[arg(short, long)]
         gamma: f64,
     },
+    Negaposi,
 }
 
 fn main() {
+    let start = time::Instant::now();
     let cli = Cli::parse();
     match &cli.command {
         Commands::Grayscale { red, green, blue } => {
@@ -61,5 +63,10 @@ fn main() {
             let img = filters::gamma(cli.target, *gamma);
             img.save(cli.out).unwrap()
         }
+        Commands::Negaposi => {
+            let img = filters::negaposi(cli.target);
+            img.save(cli.out).unwrap()
+        }
     }
+    println!("Compute time:{:?}", start.elapsed());
 }
