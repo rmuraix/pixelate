@@ -35,6 +35,12 @@ enum Commands {
     },
     /// halftoning using the dither method
     Halftone,
+    /// gamma correction
+    Gamma {
+        /// gamma value
+        #[arg(short, long)]
+        gamma: f64,
+    },
 }
 
 fn main() {
@@ -49,6 +55,10 @@ fn main() {
         }
         Commands::Halftone => {
             let img = filters::halftoning(cli.target);
+            img.save(cli.out).unwrap()
+        }
+        Commands::Gamma { gamma } => {
+            let img = filters::gamma(cli.target, *gamma);
             img.save(cli.out).unwrap()
         }
     }
