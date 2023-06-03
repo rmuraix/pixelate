@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, time};
 
 use clap::{Parser, Subcommand};
 
@@ -44,6 +44,7 @@ enum Commands {
 }
 
 fn main() {
+    let start = time::Instant::now();
     let cli = Cli::parse();
     match &cli.command {
         Commands::Grayscale { red, green, blue } => {
@@ -62,4 +63,5 @@ fn main() {
             img.save(cli.out).unwrap()
         }
     }
+    println!("Compute time:{:?}", start.elapsed());
 }
