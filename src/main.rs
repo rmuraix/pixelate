@@ -41,6 +41,7 @@ enum Commands {
         #[arg(short, long)]
         gamma: f64,
     },
+    Negaposi,
 }
 
 fn main() {
@@ -60,6 +61,10 @@ fn main() {
         }
         Commands::Gamma { gamma } => {
             let img = filters::gamma(cli.target, *gamma);
+            img.save(cli.out).unwrap()
+        }
+        Commands::Negaposi => {
+            let img = filters::negaposi(cli.target);
             img.save(cli.out).unwrap()
         }
     }

@@ -16,6 +16,8 @@ Run `pixelate --help` or `pixelate -h` to read how to use it.
 
 - Grayscale
 - Halftoning(dither method)
+- Gamma correction
+- Negative-positive reversal
 
 ## Contributing
 
