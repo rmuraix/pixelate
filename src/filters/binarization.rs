@@ -1,10 +1,6 @@
-use std::path::PathBuf;
-
 use image::{ImageBuffer, Rgb, RgbImage};
 
-pub fn halftoning(path: PathBuf) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-    let img: image::DynamicImage = image::open(path).unwrap();
-    let img = img.to_rgb8();
+pub fn halftoning(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
     let (width, height) = img.dimensions();
     // dither method
     // Bayar pattern

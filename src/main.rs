@@ -47,24 +47,29 @@ enum Commands {
 fn main() {
     let start = time::Instant::now();
     let cli = Cli::parse();
+    let dynamic_img: image::DynamicImage = image::open(cli.target).unwrap();
     match &cli.command {
         Commands::Grayscale { red, green, blue } => {
             if (red + green + blue) > 1.0 {
                 panic!("The sum of the RGB values must be less than 1.0")
             }
-            let img = filters::grayscale(cli.target, *red, *green, *blue);
+            let rgb_img = dynamic_img.to_rgb8();
+            let img = filters::grayscale(rgb_img, *red, *green, *blue);
             img.save(cli.out).unwrap()
         }
         Commands::Halftone => {
-            let img = filters::halftoning(cli.target);
+            let rgb_img = dynamic_img.to_rgb8();
+            let img = filters::halftoning(rgb_img);
             img.save(cli.out).unwrap()
         }
         Commands::Gamma { gamma } => {
-            let img = filters::gamma(cli.target, *gamma);
+            let rgb_img = dynamic_img.to_rgb8();
+            let img = filters::gamma(rgb_img, *gamma);
             img.save(cli.out).unwrap()
         }
         Commands::Negaposi => {
-            let img = filters::negaposi(cli.target);
+            let rgb_img = dynamic_img.to_rgb8();
+            let img = filters::negaposi(rgb_img);
             img.save(cli.out).unwrap()
         }
     }
