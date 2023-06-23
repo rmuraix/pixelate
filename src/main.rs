@@ -41,6 +41,7 @@ enum Commands {
         #[arg(short, long)]
         gamma: f64,
     },
+    /// Negative-positive reversal
     Negaposi,
 }
 
