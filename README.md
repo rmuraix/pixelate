@@ -1,6 +1,7 @@
 # Pixelate
 
 [![License](https://img.shields.io/github/license/rmuraix/pixelate)](./LICENSE)
+[![Build](https://github.com/rmuraix/pixelate/actions/workflows/build.yml/badge.svg)](https://github.com/rmuraix/pixelate/actions/workflows/build.yml)
 [![DeepSource](https://app.deepsource.com/gh/rmuraix/pixelate.svg/?label=active+issues&token=q-nr7qZ1BorKK50kZt8nwRt-)](https://app.deepsource.com/gh/rmuraix/pixelate/?ref=repository-badge)
 
 ## About
@@ -9,15 +10,24 @@ Command line applications for image processing
 
 ## Usage
 
-Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.  
-Run `pixelate --help` or `pixelate -h` to read how to use it.
+Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.
 
-## Available features
+```shell
+Usage: pixelate --target <FILE> --out <FILE> <COMMAND>
 
-- Grayscale
-- Halftoning(dither method)
-- Gamma correction
-- Negative-positive reversal
+Commands:
+  grayscale  Convert to grayscale image
+  halftone   halftoning using the dither method
+  gamma      gamma correction
+  negaposi   Negative-positive reversal
+  help       Print this message or the help of the given subcommand(s)
+
+Options:
+  -t, --target <FILE>  Path to the image file to be processed
+  -o, --out <FILE>     Output path of the processed image file
+  -h, --help           Print help
+  -V, --version        Print version
+```
 
 ## Contributing
 
