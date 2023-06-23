@@ -1,9 +1,6 @@
 use image::{ImageBuffer, Rgb, RgbImage};
-use std::path::PathBuf;
 
-pub fn main(path: PathBuf) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-    let img: image::DynamicImage = image::open(path).unwrap();
-    let img = img.to_rgb8();
+pub fn main(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
     let (width, height) = img.dimensions();
 
     let mut imgbuf: RgbImage = ImageBuffer::new(width, height);

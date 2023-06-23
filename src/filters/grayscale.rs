@@ -1,19 +1,20 @@
-use std::path::PathBuf;
+use image::{self, ImageBuffer, Luma, Rgb};
 
-use image::{self, ImageBuffer, Luma};
-
-pub fn grayscale(path: PathBuf, red: f64, green: f64, blue: f64) -> ImageBuffer<Luma<u8>, Vec<u8>> {
-    let img = image::open(path).unwrap();
-    let img = img.to_rgb8();
-    let size_x = img.width();
-    let size_y = img.height();
+pub fn grayscale(
+    img: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    red: f64,
+    green: f64,
+    blue: f64,
+) -> ImageBuffer<Luma<u8>, Vec<u8>> {
+    let width = img.width();
+    let height = img.height();
 
     // create data for grayscale
-    let mut gray_img = image::GrayImage::new(size_x, size_y);
+    let mut gray_img = image::GrayImage::new(width, height);
     let _pix = img.get_pixel(0, 0);
 
-    for y in 0..size_y {
-        for x in 0..size_x {
+    for y in 0..height {
+        for x in 0..width {
             // Get pixel data
             let pix = img.get_pixel(x, y);
             let val = [((pix[0] as f32 * red as f32) as u32
