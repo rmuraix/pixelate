@@ -23,3 +23,27 @@ pub fn halftoning(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Ve
     }
     imgbuf
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use image::{ImageBuffer, Rgb};
+
+    fn create_test_image() -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        // Generate 4x4 gradient image
+        ImageBuffer::from_fn(4, 4, |x, y| Rgb([x as u8 * 60, y as u8 * 60, 100]))
+    }
+
+    #[test]
+    fn test_halftoning() {
+        let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
+        let ht: ImageBuffer<Rgb<u8>, Vec<u8>> = halftoning(img);
+        assert_eq!(ht.dimensions(), (4, 4));
+        // Ensure that each pixel has a value of 0 or 255
+        for pixel in ht.pixels() {
+            for &v in pixel.0.iter() {
+                assert!(v == 0 || v == 255);
+            }
+        }
+    }
+}

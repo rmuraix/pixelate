@@ -4,9 +4,9 @@ use image::{ImageBuffer, Luma, Rgb};
 ///
 /// # Arguments
 /// * `img` - The input image
-/// * `red` - red channel weights
-/// * `green` - weights for the green channel
-/// * `blue` - weights for the blue channel
+/// * `red` - Red channel weight
+/// * `green` - Green channel weight
+/// * `blue` - Blue channel weight
 ///
 /// # Returns
 /// Grayscale image
@@ -31,4 +31,39 @@ pub fn grayscale(
         }
     }
     gray_img
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use image::{ImageBuffer, Luma, Rgb};
+
+    fn create_test_image() -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        ImageBuffer::from_fn(2, 2, |x, y| {
+            let r: u8 = (x * 100) as u8;
+            let g: u8 = (y * 100) as u8;
+            let b: u8 = 50;
+            Rgb([r, g, b])
+        })
+    }
+
+    #[test]
+    fn test_grayscale() {
+        let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
+        let gray: ImageBuffer<Luma<u8>, Vec<u8>> = grayscale(img.clone(), 0.3, 0.59, 0.11);
+
+        assert_eq!(gray.dimensions(), (2, 2));
+
+        // Calculate and compare the expected grayscale value of each pixel
+        for (x, y, pixel) in gray.enumerate_pixels() {
+            let orig_pixel: &Rgb<u8> = img.get_pixel(x, y);
+            let expected_value: u8 = (orig_pixel[0] as f64 * 0.3
+                + orig_pixel[1] as f64 * 0.59
+                + orig_pixel[2] as f64 * 0.11)
+                .round() as u8;
+
+            let Luma([val]) = *pixel;
+            assert_eq!(val, expected_value, "Mismatch at pixel ({}, {})", x, y);
+        }
+    }
 }

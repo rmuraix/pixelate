@@ -26,3 +26,37 @@ pub fn gamma_correct(
     }
     imgbuf
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use image::{ImageBuffer, Rgb};
+
+    fn create_test_image() -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        // Generate 3x3 test images
+        ImageBuffer::from_fn(3, 3, |x, y| Rgb([x as u8 * 50, y as u8 * 50, 150]))
+    }
+
+    #[test]
+    fn test_gamma_correct() {
+        let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
+        let gamma_value = 2.2;
+        let gamma_img: ImageBuffer<Rgb<u8>, Vec<u8>> = gamma_correct(img.clone(), gamma_value);
+
+        assert_eq!(gamma_img.dimensions(), (3, 3));
+
+        // Hand-calculate gamma-corrected values and compare with expected values
+        for (x, y, pixel) in gamma_img.enumerate_pixels() {
+            let original = img.get_pixel(x, y);
+            for i in 0..3 {
+                let normalized = original[i] as f64 / 255.0;
+                let expected = (255.0 * normalized.powf(1.0 / gamma_value)).round() as u8;
+                assert_eq!(
+                    pixel[i], expected,
+                    "Mismatch at pixel ({}, {}), channel {}",
+                    x, y, i
+                );
+            }
+        }
+    }
+}
