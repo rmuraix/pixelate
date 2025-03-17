@@ -11,7 +11,7 @@ Command line applications for image processing
 
 Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.
 
-```shell
+```bash
 Usage: pixelate --input <FILE> --output <FILE> <COMMAND>
 
 Commands:
@@ -28,6 +28,64 @@ Options:
   -V, --version        Print version
 ```
 
+### Grayscale
+
+```bash
+Usage: pixelate --input <FILE> --output <FILE> grayscale [OPTIONS]
+
+Options:
+  -r, --red <RED>      Red channel weight [default: 0.2126]
+  -g, --green <GREEN>  Green channel weight [default: 0.7152]
+  -b, --blue <BLUE>    Blue channel weight [default: 0.0722]
+  -h, --help           Print help
+```
+
+#### Example
+
+![Grayscale](./assets/parrot_grayscale.jpg)
+
+### Halftone
+
+```bash
+Usage: pixelate --input <FILE> --output <FILE> halftone
+
+Options:
+  -h, --help  Print help
+```
+
+#### Example
+
+![Halftone](./assets/parrot_halftone.jpg)
+
+### Gamma
+
+```bash
+Usage: pixelate --input <FILE> --output <FILE> gamma --gamma <GAMMA>
+
+Options:
+  -g, --gamma <GAMMA>  Gamma value
+  -h, --help           Print help
+```
+
+#### Example
+
+`gamma=0.45`
+
+![Gamma](./assets/parrot_gamma.jpg)
+
+### Invert
+
+```bash
+Usage: pixelate --input <FILE> --output <FILE> invert
+
+Options:
+  -h, --help  Print help
+```
+
+#### Example
+
+![Invert](./assets/parrot_invert.jpg)
+
 ## Contributing
 
-Your contribution is always welcome. Please read [Contributing Guide](.github/CONTRIBUTING.md).
+Your contribution is always welcome. Please read [Contributing Guide](https://github.com/rmuraix/.github/blob/main/.github/CONTRIBUTING.md).
