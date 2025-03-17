@@ -3,7 +3,7 @@ use image::{ImageBuffer, Luma, Rgb};
 mod binarization;
 mod gamma;
 mod grayscale;
-mod negaposi;
+mod invert;
 
 pub fn grayscale(
     img: ImageBuffer<Rgb<u8>, Vec<u8>>,
@@ -13,12 +13,18 @@ pub fn grayscale(
 ) -> ImageBuffer<Luma<u8>, Vec<u8>> {
     grayscale::grayscale(img, red, green, blue)
 }
+
 pub fn halftoning(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
     binarization::halftoning(img)
 }
-pub fn gamma(img: ImageBuffer<Rgb<u8>, Vec<u8>>, gamma: f64) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-    gamma::main(img, gamma)
+
+pub fn gamma_correct(
+    img: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    gamma: f64,
+) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+    gamma::gamma_correct(img, gamma)
 }
-pub fn negaposi(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-    negaposi::main(img)
+
+pub fn invert_colors(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+    invert::invert_colors(img)
 }

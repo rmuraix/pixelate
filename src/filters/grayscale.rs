@@ -1,29 +1,34 @@
-use image::{self, ImageBuffer, Luma, Rgb};
+use image::{ImageBuffer, Luma, Rgb};
 
+/// Convert an RGB image to grayscale with the specified channel weights.
+///
+/// # Arguments
+/// * `img` - The input image
+/// * `red` - red channel weights
+/// * `green` - weights for the green channel
+/// * `blue` - weights for the blue channel
+///
+/// # Returns
+/// Grayscale image
 pub fn grayscale(
     img: ImageBuffer<Rgb<u8>, Vec<u8>>,
     red: f64,
     green: f64,
     blue: f64,
 ) -> ImageBuffer<Luma<u8>, Vec<u8>> {
-    let width = img.width();
-    let height = img.height();
-
-    // create data for grayscale
-    let mut gray_img = image::GrayImage::new(width, height);
-    let _pix = img.get_pixel(0, 0);
+    let width: u32 = img.width();
+    let height: u32 = img.height();
+    let mut gray_img: ImageBuffer<Luma<u8>, Vec<u8>> = image::GrayImage::new(width, height);
 
     for y in 0..height {
         for x in 0..width {
-            // Get pixel data
-            let pix = img.get_pixel(x, y);
-            let val = [((pix[0] as f32 * red as f32) as u32
-                + (pix[1] as f32 * green as f32) as u32
-                + (pix[2] as f32 * blue as f32) as u32) as u8; 1];
-            // Writing pixel data to grayscale data
-            gray_img.put_pixel(x, y, image::Luma(val));
+            let pix: &Rgb<u8> = img.get_pixel(x, y);
+            let gray_value: u8 =
+                (pix[0] as f64 * red + pix[1] as f64 * green + pix[2] as f64 * blue)
+                    .round()
+                    .min(255.0) as u8;
+            gray_img.put_pixel(x, y, image::Luma([gray_value]));
         }
     }
-
-    return gray_img;
+    gray_img
 }
