@@ -12,16 +12,16 @@ struct Cli {
 
     /// Path to the image file to be processed
     #[arg(short, long, value_name = "FILE")]
-    target: PathBuf,
+    input: PathBuf,
 
-    /// Output path of the processed image file.
+    /// Output path for the processed image file
     #[arg(short, long, value_name = "FILE")]
-    out: PathBuf,
+    output: PathBuf,
 }
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Convert to grayscale image
+    /// Convert the image to grayscale
     Grayscale {
         /// Red weight
         #[arg(short, long, default_value = "0.2126")]
@@ -33,22 +33,22 @@ enum Commands {
         #[arg(short, long, default_value = "0.0722")]
         blue: f64,
     },
-    /// halftoning using the dither method
+    /// Apply halftoning using the dithering method
     Halftone,
-    /// gamma correction
+    /// Perform gamma correction
     Gamma {
         /// gamma value
         #[arg(short, long)]
         gamma: f64,
     },
-    /// Negative-positive reversal
-    Negaposi,
+    /// Apply negative-positive inversion
+    Invert,
 }
 
 fn main() {
     let start = time::Instant::now();
     let cli = Cli::parse();
-    let dynamic_img: image::DynamicImage = image::open(cli.target).unwrap();
+    let dynamic_img: image::DynamicImage = image::open(cli.input).unwrap();
     match &cli.command {
         Commands::Grayscale { red, green, blue } => {
             if (red + green + blue) > 1.0 {
@@ -56,22 +56,22 @@ fn main() {
             }
             let rgb_img = dynamic_img.to_rgb8();
             let img = filters::grayscale(rgb_img, *red, *green, *blue);
-            img.save(cli.out).unwrap()
+            img.save(cli.output).unwrap()
         }
         Commands::Halftone => {
             let rgb_img = dynamic_img.to_rgb8();
             let img = filters::halftoning(rgb_img);
-            img.save(cli.out).unwrap()
+            img.save(cli.output).unwrap()
         }
         Commands::Gamma { gamma } => {
             let rgb_img = dynamic_img.to_rgb8();
             let img = filters::gamma(rgb_img, *gamma);
-            img.save(cli.out).unwrap()
+            img.save(cli.output).unwrap()
         }
-        Commands::Negaposi => {
+        Commands::Invert => {
             let rgb_img = dynamic_img.to_rgb8();
             let img = filters::negaposi(rgb_img);
-            img.save(cli.out).unwrap()
+            img.save(cli.output).unwrap()
         }
     }
     println!("Compute time:{:?}", start.elapsed());
