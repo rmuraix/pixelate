@@ -12,18 +12,18 @@ Command line applications for image processing
 Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.
 
 ```shell
-Usage: pixelate --target <FILE> --out <FILE> <COMMAND>
+Usage: pixelate --input <FILE> --output <FILE> <COMMAND>
 
 Commands:
-  grayscale  Convert to grayscale image
-  halftone   halftoning using the dither method
-  gamma      gamma correction
-  negaposi   Negative-positive reversal
+  grayscale  Convert the image to grayscale
+  halftone   Apply halftoning using the dithering method
+  gamma      Perform gamma correction
+  invert     Apply negative-positive inversion
   help       Print this message or the help of the given subcommand(s)
 
 Options:
-  -t, --target <FILE>  Path to the image file to be processed
-  -o, --out <FILE>     Output path of the processed image file
+  -i, --input <FILE>   Path to the image file to be processed
+  -o, --output <FILE>  Output path for the processed image file
   -h, --help           Print help
   -V, --version        Print version
 ```
