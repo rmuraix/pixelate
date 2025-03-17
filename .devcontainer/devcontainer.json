@@ -1,0 +1,32 @@
+{
+    "name": "pixelate",
+    "image": "rust:1.85.0-slim-bookworm",
+    "containerEnv": {
+        "TZ": "Asia/Tokyo"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": false,
+            "installOhMyZsh": false,
+            "installOhMyZshConfig": false,
+            "upgradePackages": false,
+            "username": "vscode",
+            "userUid": "automatic",
+            "userGid": "automatic"
+        }
+    },
+    "remoteUser": "vscode",
+    "onCreateCommand": "rustup component add rustfmt clippy",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "tamasfe.even-better-toml"
+            ],
+            "settings": {
+                "rust-analyzer.checkOnSave.command": "clippy",
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}
