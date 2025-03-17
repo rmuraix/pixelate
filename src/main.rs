@@ -45,34 +45,41 @@ enum Commands {
     Invert,
 }
 
-fn main() {
-    let start = time::Instant::now();
-    let cli = Cli::parse();
-    let dynamic_img: image::DynamicImage = image::open(cli.input).unwrap();
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let start: time::Instant = time::Instant::now();
+    let cli: Cli = Cli::parse();
+
+    // Read the image file
+    let dynamic_img: image::DynamicImage = image::open(&cli.input)?;
+    let rgb_img: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = dynamic_img.to_rgb8();
+
     match &cli.command {
         Commands::Grayscale { red, green, blue } => {
-            if (red + green + blue) > 1.0 {
-                panic!("The sum of the RGB values must be less than 1.0")
+            // Check that the sum of RGB weights does not exceed 1.0
+            if red + green + blue > 1.0 {
+                return Err("The sum of the RGB weights must be less than or equal to 1.0".into());
             }
-            let rgb_img = dynamic_img.to_rgb8();
-            let img = filters::grayscale(rgb_img, *red, *green, *blue);
-            img.save(cli.output).unwrap()
+            let img: image::ImageBuffer<image::Luma<u8>, Vec<u8>> =
+                filters::grayscale(rgb_img, *red, *green, *blue);
+            img.save(&cli.output)?;
         }
         Commands::Halftone => {
-            let rgb_img = dynamic_img.to_rgb8();
-            let img = filters::halftoning(rgb_img);
-            img.save(cli.output).unwrap()
+            let img: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = filters::halftoning(rgb_img);
+            img.save(&cli.output)?;
         }
         Commands::Gamma { gamma } => {
-            let rgb_img = dynamic_img.to_rgb8();
-            let img = filters::gamma(rgb_img, *gamma);
-            img.save(cli.output).unwrap()
+            if *gamma <= 0.0 {
+                return Err("Gamma value must be greater than 0.0".into());
+            }
+            let img: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> =
+                filters::gamma_correct(rgb_img, *gamma);
+            img.save(&cli.output)?;
         }
         Commands::Invert => {
-            let rgb_img = dynamic_img.to_rgb8();
-            let img = filters::negaposi(rgb_img);
-            img.save(cli.output).unwrap()
+            let img: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = filters::invert_colors(rgb_img);
+            img.save(&cli.output)?;
         }
     }
-    println!("Compute time:{:?}", start.elapsed());
+    println!("Compute time: {:?}", start.elapsed());
+    Ok(())
 }
