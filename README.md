@@ -2,7 +2,6 @@
 
 [![License](https://img.shields.io/github/license/rmuraix/pixelate)](./LICENSE)
 [![Build](https://github.com/rmuraix/pixelate/actions/workflows/build.yml/badge.svg)](https://github.com/rmuraix/pixelate/actions/workflows/build.yml)
-[![DeepSource](https://app.deepsource.com/gh/rmuraix/pixelate.svg/?label=active+issues&token=q-nr7qZ1BorKK50kZt8nwRt-)](https://app.deepsource.com/gh/rmuraix/pixelate/?ref=repository-badge)
 
 ## About
 
