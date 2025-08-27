@@ -1,3 +1,4 @@
+//! Per-channel inversion utilities for RGB images.
 use image::{ImageBuffer, Rgb, RgbImage};
 
 /// Invert the colors of an image (negative-positive inversion).
@@ -7,7 +8,7 @@ use image::{ImageBuffer, Rgb, RgbImage};
 ///
 /// # Returns
 /// RGB image after color inversion
-pub fn invert_colors(img: ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+pub fn invert_colors(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
     let (width, height) = img.dimensions();
     let mut imgbuf: RgbImage = ImageBuffer::new(width, height);
 
@@ -37,7 +38,7 @@ mod tests {
     #[test]
     fn test_invert_colors() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
-        let inv: ImageBuffer<Rgb<u8>, Vec<u8>> = invert_colors(img.clone());
+        let inv: ImageBuffer<Rgb<u8>, Vec<u8>> = invert_colors(&img);
         assert_eq!(inv.dimensions(), (2, 2));
         for (x, y, pixel) in inv.enumerate_pixels() {
             let orig: &Rgb<u8> = img.get_pixel(x, y);

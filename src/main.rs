@@ -1,8 +1,7 @@
 use clap::{Parser, Subcommand};
 use std::{path::PathBuf, time};
 
-mod filters;
-use filters::{Filter, GammaFilter, GrayscaleFilter, HalftoneFilter, InvertFilter};
+use pixelate::filters::{Filter, GammaFilter, GrayscaleFilter, HalftoneFilter, InvertFilter};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]

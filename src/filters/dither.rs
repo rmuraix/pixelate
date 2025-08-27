@@ -1,11 +1,14 @@
+//! Ordered dithering (Bayer matrix) operating on grayscale images.
+//!
+//! Input and output are `Luma<u8>` buffers; output pixels are 0 or 255.
 use image::{ImageBuffer, Luma};
 
 const PATTERN_SIZE: u32 = 4;
 const THRESHOLD_MULTIPLIER: u8 = 16;
 const THRESHOLD_OFFSET: u8 = 8;
 
-/// Perform halftoning using the dither method on a grayscale image.
-pub fn halftoning(img: ImageBuffer<Luma<u8>, Vec<u8>>) -> ImageBuffer<Luma<u8>, Vec<u8>> {
+/// Perform halftoning using a 4x4 Bayer matrix on a grayscale image.
+pub fn halftoning(img: &ImageBuffer<Luma<u8>, Vec<u8>>) -> ImageBuffer<Luma<u8>, Vec<u8>> {
     let (width, height) = img.dimensions();
 
     let pattern: [[u8; 4]; 4] = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
@@ -36,7 +39,7 @@ mod tests {
     #[test]
     fn test_halftoning() {
         let img: ImageBuffer<Luma<u8>, Vec<u8>> = create_test_image();
-        let ht: ImageBuffer<Luma<u8>, Vec<u8>> = halftoning(img);
+        let ht: ImageBuffer<Luma<u8>, Vec<u8>> = halftoning(&img);
         assert_eq!(ht.dimensions(), (4, 4));
         // Ensure that each pixel has a value of 0 or 255
         for pixel in ht.pixels() {
