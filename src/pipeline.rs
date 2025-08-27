@@ -1,12 +1,11 @@
 //! Typed, functional-style composition utilities for filters.
 //!
-//! Example: chain grayscale then halftone.
+//! Example: chain invert (RGB→RGB) then halftone (RGB→grayscale).
 //! ```no_run
-//! use pixelate::filters::{Filter, GrayscaleFilter, HalftoneFilter};
+//! use pixelate::filters::{Filter, InvertFilter, HalftoneFilter};
 //! use pixelate::pipeline::Pipeline;
 //! # let img = image::RgbImage::new(1,1);
-//! let pipe = Pipeline::new(GrayscaleFilter::new(0.2126, 0.7152, 0.0722))
-//!     .then(HalftoneFilter);
+//! let pipe = Pipeline::new(InvertFilter).then(HalftoneFilter);
 //! let out = pipe.apply(&img);
 //! ```
 use crate::filters::Filter;
