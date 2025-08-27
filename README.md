@@ -55,6 +55,8 @@ Options:
 
 #### Example
 
+Produces black-and-white (grayscale) ordered-dither output.
+
 ![Halftone](./assets/parrot_halftone.jpg)
 
 ### Gamma
@@ -85,6 +87,26 @@ Options:
 #### Example
 
 ![Invert](./assets/parrot_invert.jpg)
+
+## Development
+
+- Build: `cargo build` (release: `cargo build --release`)
+- Test: `cargo test`
+- Format: `cargo fmt --all` (CI enforces `-- --check`)
+- Lint: `cargo clippy --all-targets --all-features -- -D warnings`
+
+## Library Usage
+
+You can use Pixelate as a library. Example (apply halftone):
+
+```rust
+use image::GenericImageView;
+use pixelate::filters::{Filter, HalftoneFilter};
+
+let img = image::open("input.jpg")?.to_rgb8();
+let out = HalftoneFilter.apply(&img);
+out.save("out.jpg")?;
+```
 
 ## Contributing
 

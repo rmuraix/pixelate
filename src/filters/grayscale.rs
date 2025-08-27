@@ -1,3 +1,4 @@
+//! Grayscale conversion utilities.
 use image::{ImageBuffer, Luma, Rgb};
 
 /// Convert an RGB image to grayscale with the specified channel weights.
@@ -11,7 +12,7 @@ use image::{ImageBuffer, Luma, Rgb};
 /// # Returns
 /// Grayscale image
 pub fn grayscale(
-    img: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    img: &ImageBuffer<Rgb<u8>, Vec<u8>>,
     red: f64,
     green: f64,
     blue: f64,
@@ -50,7 +51,7 @@ mod tests {
     #[test]
     fn test_grayscale() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
-        let gray: ImageBuffer<Luma<u8>, Vec<u8>> = grayscale(img.clone(), 0.3, 0.59, 0.11);
+        let gray: ImageBuffer<Luma<u8>, Vec<u8>> = grayscale(&img, 0.3, 0.59, 0.11);
 
         assert_eq!(gray.dimensions(), (2, 2));
 

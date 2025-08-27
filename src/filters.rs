@@ -1,16 +1,26 @@
+//! Filter traits and built-in filters used by the CLI and library users.
+//!
+//! Each filter implements the generic [`crate::filters::Filter`] trait with concrete input and
+//! output image types. Filters consume an input by reference and return a new
+//! image buffer without mutating the original.
+use crate::color::{SRGB_LUMA_B, SRGB_LUMA_G, SRGB_LUMA_R};
 use image::{ImageBuffer, Luma, Rgb};
 
-/// Common trait for applying image filters.
-pub trait Filter {
-    type Output;
-    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output;
+/// Generic trait for applying image filters.
+///
+/// `I` is the input type (typically an `ImageBuffer`), and `O` is the output
+/// type. Implementations must be pure: they should not mutate the input and
+/// should return a fresh buffer.
+pub trait Filter<I, O> {
+    fn apply(&self, input: &I) -> O;
 }
 
-mod binarization;
+mod dither;
 mod gamma;
 mod grayscale;
 mod invert;
 
+/// Convert an RGB image to grayscale using weighted channel luminance.
 pub struct GrayscaleFilter {
     pub red: f64,
     pub green: f64,
@@ -18,53 +28,54 @@ pub struct GrayscaleFilter {
 }
 
 impl GrayscaleFilter {
+    /// Create a new grayscale filter with provided channel weights.
     pub fn new(red: f64, green: f64, blue: f64) -> Self {
         Self { red, green, blue }
     }
 }
 
-impl Filter for GrayscaleFilter {
-    type Output = ImageBuffer<Luma<u8>, Vec<u8>>;
-    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output {
-        grayscale::grayscale(img.clone(), self.red, self.green, self.blue)
+impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Luma<u8>, Vec<u8>>> for GrayscaleFilter {
+    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Luma<u8>, Vec<u8>> {
+        grayscale::grayscale(img, self.red, self.green, self.blue)
     }
 }
 
+/// Ordered-dither (Bayer matrix) halftone on luminance; outputs black and white.
 pub struct HalftoneFilter;
 
-impl Filter for HalftoneFilter {
-    type Output = ImageBuffer<Luma<u8>, Vec<u8>>;
-    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output {
+impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Luma<u8>, Vec<u8>>> for HalftoneFilter {
+    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Luma<u8>, Vec<u8>> {
         // Convert to grayscale before applying halftoning
         let gray: ImageBuffer<Luma<u8>, Vec<u8>> =
-            grayscale::grayscale(img.clone(), 0.2126, 0.7152, 0.0722);
-        binarization::halftoning(gray)
+            grayscale::grayscale(img, SRGB_LUMA_R, SRGB_LUMA_G, SRGB_LUMA_B);
+        dither::halftoning(&gray)
     }
 }
 
+/// Gamma-correction filter for RGB images.
 pub struct GammaFilter {
     pub gamma: f64,
 }
 
 impl GammaFilter {
+    /// Create a new gamma-correction filter with the given `gamma` value.
     pub fn new(gamma: f64) -> Self {
         Self { gamma }
     }
 }
 
-impl Filter for GammaFilter {
-    type Output = ImageBuffer<Rgb<u8>, Vec<u8>>;
-    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output {
-        gamma::gamma_correct(img.clone(), self.gamma)
+impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Rgb<u8>, Vec<u8>>> for GammaFilter {
+    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        gamma::gamma_correct(img, self.gamma)
     }
 }
 
+/// Per-channel inversion (negative) for RGB images.
 pub struct InvertFilter;
 
-impl Filter for InvertFilter {
-    type Output = ImageBuffer<Rgb<u8>, Vec<u8>>;
-    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output {
-        invert::invert_colors(img.clone())
+impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Rgb<u8>, Vec<u8>>> for InvertFilter {
+    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        invert::invert_colors(img)
     }
 }
 
@@ -85,7 +96,8 @@ mod tests {
     fn test_grayscale_filter() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let filter: GrayscaleFilter = GrayscaleFilter::new(0.3, 0.59, 0.11);
-        let gray_img: ImageBuffer<Luma<u8>, Vec<u8>> = filter.apply(&img);
+        let gray_img: ImageBuffer<Luma<u8>, Vec<u8>> =
+            <GrayscaleFilter as Filter<_, _>>::apply(&filter, &img);
 
         assert_eq!(gray_img.dimensions(), (3, 3));
 
@@ -106,7 +118,8 @@ mod tests {
     fn test_halftone_filter() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let filter: HalftoneFilter = HalftoneFilter;
-        let ht_img: ImageBuffer<Luma<u8>, Vec<u8>> = filter.apply(&img);
+        let ht_img: ImageBuffer<Luma<u8>, Vec<u8>> =
+            <HalftoneFilter as Filter<_, _>>::apply(&filter, &img);
         assert_eq!(ht_img.dimensions(), (3, 3));
     }
 
@@ -114,7 +127,8 @@ mod tests {
     fn test_gamma_filter() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let filter: GammaFilter = GammaFilter::new(2.2);
-        let gamma_img: ImageBuffer<Rgb<u8>, Vec<u8>> = filter.apply(&img);
+        let gamma_img: ImageBuffer<Rgb<u8>, Vec<u8>> =
+            <GammaFilter as Filter<_, _>>::apply(&filter, &img);
         assert_eq!(gamma_img.dimensions(), (3, 3));
     }
 
@@ -122,7 +136,8 @@ mod tests {
     fn test_invert_filter() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let filter: InvertFilter = InvertFilter;
-        let inv_img: ImageBuffer<Rgb<u8>, Vec<u8>> = filter.apply(&img);
+        let inv_img: ImageBuffer<Rgb<u8>, Vec<u8>> =
+            <InvertFilter as Filter<_, _>>::apply(&filter, &img);
         assert_eq!(inv_img.dimensions(), (3, 3));
         // Check that each pixel is correctly inverted
         for (x, y, pixel) in inv_img.enumerate_pixels() {

@@ -1,3 +1,4 @@
+//! Gamma correction utilities for RGB images.
 use image::{ImageBuffer, Rgb, RgbImage};
 
 const MAX_PIXEL: f64 = 255.0;
@@ -11,7 +12,7 @@ const MAX_PIXEL: f64 = 255.0;
 /// # Returns
 /// RGB image after gamma correction
 pub fn gamma_correct(
-    img: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    img: &ImageBuffer<Rgb<u8>, Vec<u8>>,
     gamma: f64,
 ) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
     let (width, height) = img.dimensions();
@@ -41,7 +42,7 @@ mod tests {
     fn test_gamma_correct() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let gamma_value = 2.2;
-        let gamma_img: ImageBuffer<Rgb<u8>, Vec<u8>> = gamma_correct(img.clone(), gamma_value);
+        let gamma_img: ImageBuffer<Rgb<u8>, Vec<u8>> = gamma_correct(&img, gamma_value);
 
         assert_eq!(gamma_img.dimensions(), (3, 3));
 
