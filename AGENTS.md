@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/main.rs`: CLI entry using `clap` (commands: `grayscale`, `halftone`, `gamma`, `invert`).
+- `src/main.rs`: CLI entry using `clap` (commands: `grayscale`, `halftone`, `gamma`, `invert`, `edge`).
 - `src/lib.rs`: library crate root exposing modules below.
 - `src/filters/`: filter modules and `Filter<I, O>` trait in `src/filters.rs`.
   - `grayscale.rs`, `dither.rs` (halftone, grayscale-only), `gamma.rs`, `invert.rs`.
@@ -33,7 +33,7 @@
 ## Commit & Pull Request Guidelines
 - Commits: follow Conventional Commits (e.g., `feat(filters): add sepia filter`, `fix(deps): bump clap`). Project history uses `fix(deps)`, `chore(deps)`.
 - PRs: include description, rationale, and linked issues; show before/after output if behavior changes (attach sample images when helpful).
-- Requirements: pass CI; run `cargo fmt` and `cargo clippy` locally; update README/help text for new CLI options; note that halftone outputs grayscale.
+- Requirements: pass CI; run `cargo fmt` and `cargo clippy` locally; update README/help text for new CLI options; note that halftone outputs grayscale. When adding new edge methods, extend `EdgeMethod` and README.
 
 ## Security & Configuration Tips
 - Validate user inputs (paths, numeric ranges like `gamma > 0`); keep error messages clear.

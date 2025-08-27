@@ -19,6 +19,7 @@ Commands:
   halftone   Apply halftoning using the dithering method
   gamma      Perform gamma correction
   invert     Apply negative-positive inversion
+  edge       Detect edges (e.g., Sobel)
   help       Print this message or the help of the given subcommand(s)
 
 Options:
@@ -87,6 +88,36 @@ Options:
 #### Example
 
 ![Invert](./assets/parrot_invert.jpg)
+
+### Edge
+
+```bash
+Usage: pixelate --input <FILE> --output <FILE> edge [OPTIONS]
+
+Options:
+      --method <METHOD>
+          Edge detection method
+
+          Possible values:
+          - sobel: Sobel operator (gradient magnitude)
+          
+          [default: sobel]
+
+      --intensity <INTENSITY>
+          Intensity multiplier applied after normalization (>= 0.0)
+          
+          [default: 1.0]
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+#### Example
+
+`method=sobel intensity=2.0`
+
+![Edge](./assets/parrot_edge.jpg)
+
 
 ## Development
 
