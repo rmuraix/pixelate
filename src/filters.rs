@@ -15,10 +15,12 @@ pub trait Filter<I, O> {
     fn apply(&self, input: &I) -> O;
 }
 
+mod convolution;
 mod dither;
 mod gamma;
 mod grayscale;
 mod invert;
+mod sobel;
 
 /// Convert an RGB image to grayscale using weighted channel luminance.
 pub struct GrayscaleFilter {
@@ -76,6 +78,25 @@ pub struct InvertFilter;
 impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Rgb<u8>, Vec<u8>>> for InvertFilter {
     fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
         invert::invert_colors(img)
+    }
+}
+
+/// Sobel edge detection (magnitude of gradient) for RGB images.
+pub struct SobelFilter {
+    /// Intensity multiplier applied after normalization (>= 0.0).
+    pub intensity: f64,
+}
+
+impl SobelFilter {
+    /// Create a new Sobel filter with the given intensity multiplier.
+    pub fn new(intensity: f64) -> Self {
+        Self { intensity }
+    }
+}
+
+impl Filter<ImageBuffer<Rgb<u8>, Vec<u8>>, ImageBuffer<Luma<u8>, Vec<u8>>> for SobelFilter {
+    fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> ImageBuffer<Luma<u8>, Vec<u8>> {
+        sobel::sobel_edges(img, self.intensity as f32)
     }
 }
 

@@ -1,7 +1,9 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use std::{path::PathBuf, time};
 
-use pixelate::filters::{Filter, GammaFilter, GrayscaleFilter, HalftoneFilter, InvertFilter};
+use pixelate::filters::{
+    Filter, GammaFilter, GrayscaleFilter, HalftoneFilter, InvertFilter, SobelFilter,
+};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -15,6 +17,12 @@ struct Cli {
 
     #[command(subcommand)]
     command: Commands,
+}
+
+#[derive(Copy, Clone, Debug, ValueEnum)]
+enum EdgeMethod {
+    /// Sobel operator (gradient magnitude)
+    Sobel,
 }
 
 #[derive(Subcommand)]
@@ -41,6 +49,15 @@ enum Commands {
     },
     /// Apply negative-positive inversion
     Invert,
+    /// Detect edges (default: Sobel operator)
+    Edge {
+        /// Edge detection method
+        #[arg(long, value_enum, default_value_t = EdgeMethod::Sobel)]
+        method: EdgeMethod,
+        /// Intensity multiplier applied after normalization (>= 0.0)
+        #[arg(long, default_value = "1.0")]
+        intensity: f64,
+    },
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -78,6 +95,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let img = filter.apply(&rgb_img);
             img.save(&cli.output)?;
         }
+        Commands::Edge { method, intensity } => match method {
+            EdgeMethod::Sobel => {
+                if *intensity < 0.0 {
+                    return Err("Intensity must be >= 0.0".into());
+                }
+                let filter: SobelFilter = SobelFilter::new(*intensity);
+                let img = filter.apply(&rgb_img);
+                img.save(&cli.output)?;
+            }
+        },
     }
     println!("Compute time: {:?}", start.elapsed());
     Ok(())
