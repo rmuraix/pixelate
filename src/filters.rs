@@ -33,9 +33,12 @@ impl Filter for GrayscaleFilter {
 pub struct HalftoneFilter;
 
 impl Filter for HalftoneFilter {
-    type Output = ImageBuffer<Rgb<u8>, Vec<u8>>;
+    type Output = ImageBuffer<Luma<u8>, Vec<u8>>;
     fn apply(&self, img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> Self::Output {
-        binarization::halftoning(img.clone())
+        // Convert to grayscale before applying halftoning
+        let gray: ImageBuffer<Luma<u8>, Vec<u8>> =
+            grayscale::grayscale(img.clone(), 0.2126, 0.7152, 0.0722);
+        binarization::halftoning(gray)
     }
 }
 
@@ -103,7 +106,7 @@ mod tests {
     fn test_halftone_filter() {
         let img: ImageBuffer<Rgb<u8>, Vec<u8>> = create_test_image();
         let filter: HalftoneFilter = HalftoneFilter;
-        let ht_img: ImageBuffer<Rgb<u8>, Vec<u8>> = filter.apply(&img);
+        let ht_img: ImageBuffer<Luma<u8>, Vec<u8>> = filter.apply(&img);
         assert_eq!(ht_img.dimensions(), (3, 3));
     }
 
