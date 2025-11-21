@@ -1,6 +1,6 @@
 {
     "name": "pixelate",
-    "image": "rust:1.87.0-slim-bookworm",
+    "image": "rust:1.91.1-slim-bookworm",
     "containerEnv": {
         "TZ": "Asia/Tokyo"
     },
