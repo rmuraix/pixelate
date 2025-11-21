@@ -45,7 +45,7 @@ jobs:
       - name: Check Linting
         run: cargo clippy --all-targets --all-features -- -D warnings
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: pixelate-${{ matrix.os }}
           path: ./target/release/pixelate*
