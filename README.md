@@ -7,6 +7,24 @@
 
 Command line applications for image processing
 
+## Installation
+
+### CLI
+
+Install the latest version directly from the repository using Cargo:
+
+```bash
+cargo install --git https://github.com/rmuraix/pixelate
+```
+
+### Library
+
+Add Pixelate as a dependency to your project using Cargo:
+
+```bash
+cargo add pixelate --git https://github.com/rmuraix/pixelate
+```
+
 ## Usage
 
 Click [here](https://github.com/image-rs/image#supported-image-formats) to see supported image formats.
