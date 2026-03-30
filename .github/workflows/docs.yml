@@ -43,7 +43,7 @@ jobs:
           echo "<meta http-equiv=\"refresh\" content=\"0; url=${CARGO_PKG_NAME}/index.html\" />" > target/doc/index.html
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
